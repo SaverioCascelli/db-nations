@@ -25,13 +25,16 @@ public class main {
                 ps.setString(1, "%" + filter + "%");
 
                 try (ResultSet rs = ps.executeQuery()) {
+                    String stringFormatter = "%-50s%-20s%-30s%-20s \n";
+                    System.out.printf(stringFormatter, "Country", "CountryID", "Region", "Continent");
                     while (rs.next()) {
                         String countryName = rs.getString(1);
                         int countryId = rs.getInt(2);
                         String regionName = rs.getString(3);
                         String continentName = rs.getString(4);
 
-                        System.out.println(countryName + "  " + countryId + "  " + regionName + "  " + continentName);
+                        System.out.printf(stringFormatter, countryName, countryId, regionName, continentName);
+//                        System.out.println(countryName + "  " + countryId + "  " + regionName + "  " + continentName);
                     }
                 }
             }
@@ -61,7 +64,7 @@ public class main {
                 ps.setInt(1, inputId);
 
                 try (ResultSet rs = ps.executeQuery()) {
-                    String lenguages = "Lenguages";
+                    String lenguages = "Lenguages: ";
 
                     while (rs.next()) {
                         lenguages += rs.getString(1) + ", ";
@@ -86,8 +89,6 @@ public class main {
                     }
                 }
             }
-
-
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
