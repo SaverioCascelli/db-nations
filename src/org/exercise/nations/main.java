@@ -18,7 +18,7 @@ public class main {
             String sql = """
                     select c.name as country_name , c.country_id , r.name as region_name ,c2.name as continent_name from countries c
                     join regions r on r.region_id = c.region_id 
-                    join continents c2 on r.continent_id = r.region_id 
+                    join continents c2 on r.continent_id = c2.continent_id
                     where c.name like ?
                     order by c.name 
                             """;
