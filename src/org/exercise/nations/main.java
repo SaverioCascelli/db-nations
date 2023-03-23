@@ -12,7 +12,6 @@ public class main {
         System.out.println("Inserisci una stringa di ricerca per nazione");
         Scanner scan = new Scanner(System.in);
         String filter = scan.nextLine();
-        scan.close();
 
         try (Connection con = DriverManager.getConnection(url, user, password)) {
             String sql = """
@@ -40,5 +39,59 @@ public class main {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+        System.out.println("inserisci un id country:");
+        int inputId = Integer.parseInt(scan.nextLine());
+
+
+        try (Connection con = DriverManager.getConnection(url, user, password)) {
+            String sql = """
+                    select l.`language`  from countries c 
+                    join country_languages cl on cl.country_id = c.country_id 
+                    join languages l on cl.language_id = l.language_id 
+                    where c.country_id = ?
+                                                """;
+            String sql2 = """
+                    select cs.year, cs.population ,cs.gdp  from countries c 
+                    join country_stats cs on cs.country_id = c.country_id 
+                    where c.country_id = ?
+                    order by cs.`year` desc
+                    limit 1                   
+                                        """;
+            try (PreparedStatement ps = con.prepareStatement(sql)) {
+                ps.setInt(1, inputId);
+
+                try (ResultSet rs = ps.executeQuery()) {
+                    String lenguages = "Lenguages";
+
+                    while (rs.next()) {
+                        lenguages += rs.getString(1) + ", ";
+                    }
+                    System.out.println(lenguages);
+                }
+            }
+            try (PreparedStatement ps = con.prepareStatement(sql2)) {
+                ps.setInt(1, inputId);
+
+                try (ResultSet rs = ps.executeQuery()) {
+                    System.out.println("most recent stats");
+                    while (rs.next()) {
+                        int year = rs.getInt(1);
+                        int population = rs.getInt(2);
+                        long gdp = rs.getLong(3);
+
+                        System.out.println("year: " + year);
+                        System.out.println("population: " + population);
+                        System.out.println("gdp: " + gdp);
+
+                    }
+                }
+            }
+
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        scan.close();
     }
 }
